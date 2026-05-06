@@ -22,6 +22,7 @@ public class Pasien {
     
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
+    @Column(columnDefinition = "CHAR(36)")
     private UUID id;
     
     @Column(unique = true, nullable = false, length = 16)
@@ -46,7 +47,7 @@ public class Pasien {
     @Column(nullable = true, length = 15)
     private String noTelp;
     
-    @Column(nullable = false)
+    @Column(nullable = false, columnDefinition = "TINYINT(1)")
     private Boolean statusBpjs = false;
     
     @Column(nullable = true, length = 20)

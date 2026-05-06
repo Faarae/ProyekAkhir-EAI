@@ -21,12 +21,13 @@ public class JadwalDokter {
     
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
+    @Column(columnDefinition = "CHAR(36)")
     private UUID id;
     
-    @Column(name = "dokter_id", nullable = false)
+    @Column(name = "dokter_id", nullable = false, columnDefinition = "CHAR(36)")
     private UUID dokterId;
     
-    @Column(name = "poliklinik_id", nullable = false)
+    @Column(name = "poliklinik_id", nullable = false, columnDefinition = "CHAR(36)")
     private UUID poliklinikId;
     
     @Enumerated(EnumType.STRING)
@@ -42,7 +43,7 @@ public class JadwalDokter {
     @Column(name = "kuota_pasien", nullable = false)
     private Integer kuotaPasien = 20;
     
-    @Column(nullable = false)
+    @Column(nullable = false, columnDefinition = "TINYINT(1)")
     private Boolean isActive = true;
 
     public enum HariKerja {

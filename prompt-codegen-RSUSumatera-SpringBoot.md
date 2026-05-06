@@ -17,7 +17,7 @@ Buat **4 project Spring Boot terpisah** (masing-masing service adalah repo indep
 Java              : 17 (LTS)
 Spring Boot       : 3.2.x
 Build Tool        : Maven
-Database          : PostgreSQL (masing-masing service DB sendiri)
+Database          : MySQL 8.0 (masing-masing service DB sendiri)
 ORM               : Spring Data JPA + Hibernate
 Migration         : Flyway
 Communication     : REST (OpenFeign) + RabbitMQ (event-driven)
@@ -27,6 +27,8 @@ Dokumentasi API   : SpringDoc OpenAPI 3 (Swagger UI)
 Testing           : JUnit 5 + Mockito
 Containerisasi    : Docker + docker-compose.yml
 ```
+
+> **Catatan MySQL:** Karena MySQL tidak punya tipe data `UUID` native, gunakan `CHAR(36)` di DDL SQL dan anotasi `@Column(columnDefinition = "CHAR(36)")` di entity. Untuk `Boolean`, gunakan `TINYINT(1)`. Semua tabel harus menggunakan `ENGINE=InnoDB` dan `DEFAULT CHARSET=utf8mb4`.
 
 ---
 
@@ -549,17 +551,17 @@ spring:
   application:
     name: {service-name}-service
   datasource:
-    url: jdbc:postgresql://localhost:5432/db_{service}
-    username: ${DB_USERNAME:postgres}
-    password: ${DB_PASSWORD:postgres}
-    driver-class-name: org.postgresql.Driver
+    url: jdbc:mysql://localhost:3306/db_{service}?useSSL=false&serverTimezone=Asia/Jakarta&allowPublicKeyRetrieval=true
+    username: ${DB_USERNAME:root}
+    password: ${DB_PASSWORD:root}
+    driver-class-name: com.mysql.cj.jdbc.Driver
   jpa:
     hibernate:
       ddl-auto: validate                ← pakai Flyway untuk migration
     show-sql: false
     properties:
       hibernate:
-        dialect: org.hibernate.dialect.PostgreSQLDialect
+        dialect: org.hibernate.dialect.MySQLDialect
         format_sql: true
   flyway:
     enabled: true
@@ -607,13 +609,17 @@ springdoc:
     <artifactId>spring-boot-starter-amqp</artifactId>
   </dependency>
   <dependency>
-    <groupId>org.postgresql</groupId>
-    <artifactId>postgresql</artifactId>
+    <groupId>com.mysql</groupId>
+    <artifactId>mysql-connector-j</artifactId>
     <scope>runtime</scope>
   </dependency>
   <dependency>
     <groupId>org.flywaydb</groupId>
     <artifactId>flyway-core</artifactId>
+  </dependency>
+  <dependency>
+    <groupId>org.flywaydb</groupId>
+    <artifactId>flyway-mysql</artifactId>   <!-- wajib untuk MySQL di Flyway 9+ -->
   </dependency>
   <dependency>
     <groupId>io.jsonwebtoken</groupId>
@@ -649,14 +655,16 @@ springdoc:
 ```yaml
 version: '3.8'
 services:
-  postgres:
-    image: postgres:15
+  mysql:
+    image: mysql:8.0
     environment:
-      POSTGRES_PASSWORD: postgres
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: db_admin       ← hanya initial DB; sisanya dibuat via init-db.sql
     volumes:
       - ./init-db.sql:/docker-entrypoint-initdb.d/init.sql
+      - mysql_data:/var/lib/mysql
     ports:
-      - "5432:5432"
+      - "3306:3306"
 
   rabbitmq:
     image: rabbitmq:3-management
@@ -668,29 +676,32 @@ services:
     build: ./admin-service
     ports:
       - "8081:8081"
-    depends_on: [postgres, rabbitmq]
+    depends_on: [mysql, rabbitmq]
     environment:
-      DB_USERNAME: postgres
-      DB_PASSWORD: postgres
+      DB_USERNAME: root
+      DB_PASSWORD: root
       RABBITMQ_HOST: rabbitmq
 
   medical-service:
     build: ./medical-service
     ports:
       - "8082:8082"
-    depends_on: [postgres, rabbitmq]
+    depends_on: [mysql, rabbitmq]
 
   pharmacy-service:
     build: ./pharmacy-service
     ports:
       - "8083:8083"
-    depends_on: [postgres, rabbitmq]
+    depends_on: [mysql, rabbitmq]
 
   payment-service:
     build: ./payment-service
     ports:
       - "8084:8084"
-    depends_on: [postgres, rabbitmq]
+    depends_on: [mysql, rabbitmq]
+
+volumes:
+  mysql_data:
 ```
 
 ---
@@ -824,7 +835,7 @@ Pastikan setiap service menghasilkan file berikut:
 
 - [ ] `pom.xml` — lengkap dengan semua dependency
 - [ ] `application.yml` + `application-dev.yml`
-- [ ] `V1__init_schema.sql` — Flyway migration
+- [ ] `V1__init_schema.sql` — Flyway migration (gunakan sintaks MySQL: `CHAR(36)` untuk UUID, `TINYINT(1)` untuk Boolean, `ENGINE=InnoDB`)
 - [ ] Semua `@Entity` class dengan Lombok annotation
 - [ ] Semua `Repository` interface (extend JpaRepository)
 - [ ] Semua `Service` interface + `ServiceImpl` class

@@ -27,10 +27,10 @@ public class JwtUtil {
         SecretKey key = Keys.hmacShaKeyFor(jwtSecret.getBytes());
         
         return Jwts.builder()
-            .setSubject(username)
+            .subject(username)
             .claim("role", role)
-            .setIssuedAt(now)
-            .setExpiration(expiryDate)
+            .issuedAt(now)
+            .expiration(expiryDate)
             .signWith(key, SignatureAlgorithm.HS512)
             .compact();
     }
@@ -38,11 +38,11 @@ public class JwtUtil {
     public String getUsernameFromToken(String token) {
         try {
             SecretKey key = Keys.hmacShaKeyFor(jwtSecret.getBytes());
-            Claims claims = Jwts.parserBuilder()
-                .setSigningKey(key)
+            Claims claims = Jwts.parser()
+                .verifyWith(key)
                 .build()
-                .parseClaimsJws(token)
-                .getBody();
+                .parseSignedClaims(token)
+                .getPayload();
             return claims.getSubject();
         } catch (Exception e) {
             log.error("Error getting username from token", e);
@@ -53,11 +53,11 @@ public class JwtUtil {
     public String getRoleFromToken(String token) {
         try {
             SecretKey key = Keys.hmacShaKeyFor(jwtSecret.getBytes());
-            Claims claims = Jwts.parserBuilder()
-                .setSigningKey(key)
+            Claims claims = Jwts.parser()
+                .verifyWith(key)
                 .build()
-                .parseClaimsJws(token)
-                .getBody();
+                .parseSignedClaims(token)
+                .getPayload();
             return claims.get("role", String.class);
         } catch (Exception e) {
             log.error("Error getting role from token", e);
@@ -68,10 +68,10 @@ public class JwtUtil {
     public boolean validateToken(String token) {
         try {
             SecretKey key = Keys.hmacShaKeyFor(jwtSecret.getBytes());
-            Jwts.parserBuilder()
-                .setSigningKey(key)
+            Jwts.parser()
+                .verifyWith(key)
                 .build()
-                .parseClaimsJws(token);
+                .parseSignedClaims(token);
             return true;
         } catch (Exception e) {
             log.error("Token validation failed", e);

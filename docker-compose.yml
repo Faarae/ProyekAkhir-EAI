@@ -2,21 +2,23 @@ version: '3.8'
 
 services:
   # Database
-  postgres:
-    image: postgres:15-alpine
-    container_name: rsu-postgres
+  mysql:
+    image: mysql:8.0
+    container_name: rsu-mysql
     environment:
-      POSTGRES_PASSWORD: postgres
-      POSTGRES_INITDB_ARGS: "-c shared_buffers=256MB -c max_connections=200"
+      MYSQL_ROOT_PASSWORD: "@Ghiffar0001"  # Disamakan dengan password lokalmu
+      MYSQL_DATABASE: db_admin
+      MYSQL_CHARSET: utf8mb4
+      MYSQL_COLLATION: utf8mb4_unicode_ci
     volumes:
       - ./init-db.sql:/docker-entrypoint-initdb.d/init.sql
-      - postgres_data:/var/lib/postgresql/data
+      - mysql_data:/var/lib/mysql
     ports:
-      - "5432:5432"
+      - "3306:3306"
     networks:
       - rsu-network
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-p@Ghiffar0001"] # Password disesuaikan
       interval: 10s
       timeout: 5s
       retries: 5
@@ -53,12 +55,13 @@ services:
       - "8081:8081"
     environment:
       PORT: 8081
-      DB_USERNAME: postgres
-      DB_PASSWORD: postgres
+      SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/db_admin?useSSL=false&serverTimezone=Asia/Jakarta&allowPublicKeyRetrieval=true
+      DB_USERNAME: root
+      DB_PASSWORD: "@Ghiffar0001"
       RABBITMQ_HOST: rabbitmq
       RABBITMQ_PORT: 5672
     depends_on:
-      postgres:
+      mysql:
         condition: service_healthy
       rabbitmq:
         condition: service_healthy
@@ -76,12 +79,13 @@ services:
       - "8082:8082"
     environment:
       PORT: 8082
-      DB_USERNAME: postgres
-      DB_PASSWORD: postgres
+      SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/db_medical?useSSL=false&serverTimezone=Asia/Jakarta&allowPublicKeyRetrieval=true
+      DB_USERNAME: root
+      DB_PASSWORD: "@Ghiffar0001"
       RABBITMQ_HOST: rabbitmq
       RABBITMQ_PORT: 5672
     depends_on:
-      postgres:
+      mysql:
         condition: service_healthy
       rabbitmq:
         condition: service_healthy
@@ -99,12 +103,13 @@ services:
       - "8083:8083"
     environment:
       PORT: 8083
-      DB_USERNAME: postgres
-      DB_PASSWORD: postgres
+      SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/db_pharmacy?useSSL=false&serverTimezone=Asia/Jakarta&allowPublicKeyRetrieval=true
+      DB_USERNAME: root
+      DB_PASSWORD: "@Ghiffar0001"
       RABBITMQ_HOST: rabbitmq
       RABBITMQ_PORT: 5672
     depends_on:
-      postgres:
+      mysql:
         condition: service_healthy
       rabbitmq:
         condition: service_healthy
@@ -122,12 +127,13 @@ services:
       - "8084:8084"
     environment:
       PORT: 8084
-      DB_USERNAME: postgres
-      DB_PASSWORD: postgres
+      SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/db_payment?useSSL=false&serverTimezone=Asia/Jakarta&allowPublicKeyRetrieval=true
+      DB_USERNAME: root
+      DB_PASSWORD: "@Ghiffar0001"
       RABBITMQ_HOST: rabbitmq
       RABBITMQ_PORT: 5672
     depends_on:
-      postgres:
+      mysql:
         condition: service_healthy
       rabbitmq:
         condition: service_healthy
@@ -140,5 +146,5 @@ networks:
     driver: bridge
 
 volumes:
-  postgres_data:
+  mysql_data:
   rabbitmq_data:

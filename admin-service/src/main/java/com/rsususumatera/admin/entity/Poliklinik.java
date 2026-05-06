@@ -17,6 +17,7 @@ public class Poliklinik {
     
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
+    @Column(columnDefinition = "CHAR(36)")
     private UUID id;
     
     @Column(nullable = false, length = 100)
@@ -25,6 +26,6 @@ public class Poliklinik {
     @Column(nullable = false)
     private Integer lantai;
     
-    @Column(nullable = false)
+    @Column(nullable = false, columnDefinition = "TINYINT(1)")
     private Boolean isActive = true;
 }

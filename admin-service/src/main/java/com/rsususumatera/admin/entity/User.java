@@ -18,6 +18,7 @@ public class User {
     
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
+    @Column(columnDefinition = "CHAR(36)")
     private UUID id;
     
     @Column(unique = true, nullable = false, length = 50)
@@ -33,10 +34,10 @@ public class User {
     @Column(nullable = false)
     private UserRole role;
     
-    @Column(nullable = true)
+    @Column(nullable = true, columnDefinition = "CHAR(36)")
     private UUID poliklinikId;
     
-    @Column(nullable = false)
+    @Column(nullable = false, columnDefinition = "TINYINT(1)")
     private Boolean isActive = true;
     
     @Column(nullable = false, updatable = false)

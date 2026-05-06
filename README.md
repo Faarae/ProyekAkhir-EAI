@@ -9,7 +9,7 @@
 - ✅ Java 17 JDK installed (`java -version`)
 - ✅ Maven 3.9+ installed (`mvn -version`)
 - ✅ Docker & Docker Compose installed (`docker -version`)
-- ✅ PostgreSQL 15+ installed OR use Docker
+- ✅ MySQL 8.0+ installed OR use Docker
 
 ### Clone & Navigate:
 ```bash
@@ -29,9 +29,9 @@ docker-compose build
 
 ### **Option 2: Local Maven Development**
 
-#### Terminal 1 - Start Infrastructure (PostgreSQL + RabbitMQ):
+#### Terminal 1 - Start Infrastructure (MySQL + RabbitMQ):
 ```bash
-docker-compose up postgres rabbitmq -d
+docker-compose up mysql rabbitmq -d
 # Wait 30 seconds for services to start
 ```
 
@@ -274,13 +274,13 @@ Password: guest
 ### Database Connection:
 ```
 Host: localhost
-Port: 5432
+Port: 3306
 Database: db_admin (or db_medical, db_pharmacy, db_payment)
-Username: postgres
-Password: postgres
+Username: root
+Password: root
 
-# Connect via psql:
-psql -h localhost -U postgres -d db_admin
+# Connect via mysql CLI:
+mysql -h localhost -u root -proot db_admin
 ```
 
 ---
@@ -305,21 +305,21 @@ docker-compose up --build
 
 ### Database connection failed:
 ```bash
-# Check PostgreSQL is running
-docker ps | grep postgres
+# Check MySQL is running
+docker ps | grep mysql
 
 # Check RabbitMQ is running
 docker ps | grep rabbitmq
 
 # Restart infrastructure
-docker-compose restart postgres rabbitmq
+docker-compose restart mysql rabbitmq
 ```
 
 ### Migration failed:
 ```bash
 # Clear Flyway history and retry
-docker-compose exec postgres psql -U postgres -d db_admin \
-  -c "DROP TABLE IF EXISTS flyway_schema_history;"
+docker-compose exec mysql mysql -u root -proot db_admin \
+  -e "DROP TABLE IF EXISTS flyway_schema_history;"
 docker-compose restart admin-service
 ```
 
@@ -328,7 +328,7 @@ docker-compose restart admin-service
 # Use different ports in docker-compose.yml
 # Or stop conflicting services:
 docker-compose down
-lsof -i :5432
+lsof -i :3306
 kill -9 <PID>
 ```
 
@@ -341,9 +341,9 @@ kill -9 <PID>
 | **Language** | Java | 17 LTS |
 | **Framework** | Spring Boot | 3.2.5 |
 | **Build Tool** | Maven | 3.9+ |
-| **Database** | PostgreSQL | 15 |
+| **Database** | MySQL | 8.0 |
 | **ORM** | Spring Data JPA + Hibernate | Latest |
-| **Migration** | Flyway | 9.22.3 |
+| **Migration** | Flyway | 9+ (with MySQL support) |
 | **Auth** | JWT (jjwt) | 0.12.3 |
 | **Message Broker** | RabbitMQ | 3.12 |
 | **API Docs** | SpringDoc OpenAPI | 2.3.0 |
@@ -358,15 +358,15 @@ kill -9 <PID>
 
 ### Backup Database:
 ```bash
-docker-compose exec postgres pg_dump -U postgres db_admin > backup_admin.sql
-docker-compose exec postgres pg_dump -U postgres db_medical > backup_medical.sql
-docker-compose exec postgres pg_dump -U postgres db_pharmacy > backup_pharmacy.sql
-docker-compose exec postgres pg_dump -U postgres db_payment > backup_payment.sql
+docker-compose exec mysql mysqldump -u root -proot db_admin > backup_admin.sql
+docker-compose exec mysql mysqldump -u root -proot db_medical > backup_medical.sql
+docker-compose exec mysql mysqldump -u root -proot db_pharmacy > backup_pharmacy.sql
+docker-compose exec mysql mysqldump -u root -proot db_payment > backup_payment.sql
 ```
 
 ### Restore Database:
 ```bash
-docker-compose exec -T postgres psql -U postgres db_admin < backup_admin.sql
+docker-compose exec -T mysql mysql -u root -proot db_admin < backup_admin.sql
 ```
 
 ---

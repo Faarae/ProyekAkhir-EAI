@@ -23,12 +23,13 @@ public class Antrean {
     
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
+    @Column(columnDefinition = "CHAR(36)")
     private UUID id;
     
-    @Column(name = "pasien_id", nullable = false)
+    @Column(name = "pasien_id", nullable = false, columnDefinition = "CHAR(36)")
     private UUID pasienId;
     
-    @Column(name = "jadwal_id", nullable = false)
+    @Column(name = "jadwal_id", nullable = false, columnDefinition = "CHAR(36)")
     private UUID jadwalId;
     
     @Column(name = "nomor_antrean", nullable = false)

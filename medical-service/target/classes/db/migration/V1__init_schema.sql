@@ -17,11 +17,11 @@ CREATE TABLE IF NOT EXISTS pemeriksaan (
     updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT 'Update timestamp',
     KEY idx_pemeriksaan_pasien (pasien_id),
     KEY idx_pemeriksaan_dokter (dokter_id),
-    KEY idx_pemeriksaan_tanggal (tanggal),
-    ENGINE=InnoDB,
-    DEFAULT CHARSET=utf8mb4,
-    COLLATE=utf8mb4_unicode_ci
-) COMMENT='Medical examination table';
+    KEY idx_pemeriksaan_tanggal (tanggal)
+) ENGINE=InnoDB
+DEFAULT CHARSET=utf8mb4
+COLLATE=utf8mb4_unicode_ci
+COMMENT='Medical examination table';
 
 CREATE TABLE IF NOT EXISTS diagnosa (
     id CHAR(36) PRIMARY KEY COMMENT 'Diagnosis ID (UUID)',
@@ -29,11 +29,12 @@ CREATE TABLE IF NOT EXISTS diagnosa (
     kode_icd10 VARCHAR(10) NOT NULL COMMENT 'ICD-10 code',
     deskripsi VARCHAR(255) NULL COMMENT 'Diagnosis description',
     is_primer TINYINT(1) DEFAULT 0 COMMENT 'Primary diagnosis flag',
-    FOREIGN KEY (pemeriksaan_id) REFERENCES pemeriksaan(id) ON DELETE CASCADE,
-    ENGINE=InnoDB,
-    DEFAULT CHARSET=utf8mb4,
-    COLLATE=utf8mb4_unicode_ci
-) COMMENT='Diagnosis table';
+    FOREIGN KEY (pemeriksaan_id) REFERENCES pemeriksaan(id) ON DELETE CASCADE
+    
+) ENGINE=InnoDB
+DEFAULT CHARSET=utf8mb4
+COLLATE=utf8mb4_unicode_ci
+COMMENT='Diagnosis table';
 
 CREATE TABLE IF NOT EXISTS tindakan (
     id CHAR(36) PRIMARY KEY COMMENT 'Action ID (UUID)',
@@ -41,11 +42,12 @@ CREATE TABLE IF NOT EXISTS tindakan (
     nama_tindakan VARCHAR(100) NOT NULL COMMENT 'Action name',
     biaya DECIMAL(12,2) NULL COMMENT 'Cost',
     keterangan VARCHAR(255) NULL COMMENT 'Notes',
-    FOREIGN KEY (pemeriksaan_id) REFERENCES pemeriksaan(id) ON DELETE CASCADE,
-    ENGINE=InnoDB,
-    DEFAULT CHARSET=utf8mb4,
-    COLLATE=utf8mb4_unicode_ci
-) COMMENT='Medical actions table';
+    FOREIGN KEY (pemeriksaan_id) REFERENCES pemeriksaan(id) ON DELETE CASCADE
+    
+) ENGINE=InnoDB
+DEFAULT CHARSET=utf8mb4
+COLLATE=utf8mb4_unicode_ci
+COMMENT='Medical actions table';
 
 CREATE TABLE IF NOT EXISTS resep (
     id CHAR(36) PRIMARY KEY COMMENT 'Prescription ID (UUID)',
@@ -56,11 +58,11 @@ CREATE TABLE IF NOT EXISTS resep (
     created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT 'Creation timestamp',
     updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT 'Update timestamp',
     FOREIGN KEY (pemeriksaan_id) REFERENCES pemeriksaan(id) ON DELETE CASCADE,
-    KEY idx_resep_pasien (pasien_id),
-    ENGINE=InnoDB,
-    DEFAULT CHARSET=utf8mb4,
-    COLLATE=utf8mb4_unicode_ci
-) COMMENT='Prescription table';
+    KEY idx_resep_pasien (pasien_id)
+) ENGINE=InnoDB
+DEFAULT CHARSET=utf8mb4
+COLLATE=utf8mb4_unicode_ci
+COMMENT='Prescription table';
 
 CREATE TABLE IF NOT EXISTS resep_detail (
     id CHAR(36) PRIMARY KEY COMMENT 'Prescription detail ID (UUID)',
@@ -70,8 +72,9 @@ CREATE TABLE IF NOT EXISTS resep_detail (
     frekuensi VARCHAR(50) NULL COMMENT 'Frequency',
     jumlah INTEGER NULL COMMENT 'Quantity',
     keterangan VARCHAR(255) NULL COMMENT 'Notes',
-    FOREIGN KEY (resep_id) REFERENCES resep(id) ON DELETE CASCADE,
-    ENGINE=InnoDB,
-    DEFAULT CHARSET=utf8mb4,
-    COLLATE=utf8mb4_unicode_ci
-) COMMENT='Prescription details table';
+    FOREIGN KEY (resep_id) REFERENCES resep(id) ON DELETE CASCADE
+    
+) ENGINE=InnoDB
+DEFAULT CHARSET=utf8mb4
+COLLATE=utf8mb4_unicode_ci
+COMMENT='Prescription details table';

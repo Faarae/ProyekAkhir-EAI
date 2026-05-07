@@ -37,9 +37,9 @@ public class Pasien {
     @Column(nullable = true)
     private LocalDate tanggalLahir;
     
-    @Enumerated(EnumType.STRING)
+    
     @Column(nullable = true)
-    private JenisKelamin jenisKelamin;
+    private String jenisKelamin;
     
     @Column(nullable = true, length = 255)
     private String alamat;

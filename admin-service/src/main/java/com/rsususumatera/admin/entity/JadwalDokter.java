@@ -29,10 +29,9 @@ public class JadwalDokter {
     
     @Column(name = "poliklinik_id", nullable = false, columnDefinition = "CHAR(36)")
     private UUID poliklinikId;
-    
-    @Enumerated(EnumType.STRING)
+
     @Column(nullable = false)
-    private HariKerja hari;
+    private String hari;
     
     @Column(name = "jam_mulai", nullable = false)
     private LocalTime jamMulai;

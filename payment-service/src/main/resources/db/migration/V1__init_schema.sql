@@ -17,11 +17,11 @@ CREATE TABLE IF NOT EXISTS invoice (
     updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT 'Update timestamp',
     KEY idx_invoice_nomor (nomor_invoice),
     KEY idx_invoice_pasien (pasien_id),
-    KEY idx_invoice_status (status),
-    ENGINE=InnoDB,
-    DEFAULT CHARSET=utf8mb4,
-    COLLATE=utf8mb4_unicode_ci
-) COMMENT='Invoice table';
+    KEY idx_invoice_status (status)
+) ENGINE=InnoDB
+DEFAULT CHARSET=utf8mb4
+COLLATE=utf8mb4_unicode_ci
+COMMENT='Invoice table';
 
 CREATE TABLE IF NOT EXISTS transaksi (
     id CHAR(36) PRIMARY KEY COMMENT 'Transaction ID (UUID)',
@@ -33,11 +33,11 @@ CREATE TABLE IF NOT EXISTS transaksi (
     status VARCHAR(20) NOT NULL DEFAULT 'PENDING' COMMENT 'Status: PENDING, SUCCESS, FAILED',
     created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT 'Creation timestamp',
     FOREIGN KEY (invoice_id) REFERENCES invoice(id) ON DELETE CASCADE,
-    KEY idx_transaksi_invoice (invoice_id),
-    ENGINE=InnoDB,
-    DEFAULT CHARSET=utf8mb4,
-    COLLATE=utf8mb4_unicode_ci
-) COMMENT='Transaction table';
+    KEY idx_transaksi_invoice (invoice_id)
+) ENGINE=InnoDB
+DEFAULT CHARSET=utf8mb4
+COLLATE=utf8mb4_unicode_ci
+COMMENT='Transaction table';
 
 CREATE TABLE IF NOT EXISTS laporan_keuangan (
     id CHAR(36) PRIMARY KEY COMMENT 'Report ID (UUID)',
@@ -46,8 +46,8 @@ CREATE TABLE IF NOT EXISTS laporan_keuangan (
     total_transaksi INTEGER NULL COMMENT 'Total transactions',
     total_pasien INTEGER NULL COMMENT 'Total patients',
     generated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT 'Generation timestamp',
-    KEY idx_laporan_periode (periode),
-    ENGINE=InnoDB,
-    DEFAULT CHARSET=utf8mb4,
-    COLLATE=utf8mb4_unicode_ci
-) COMMENT='Financial report table';
+    KEY idx_laporan_periode (periode)
+) ENGINE=InnoDB
+DEFAULT CHARSET=utf8mb4
+COLLATE=utf8mb4_unicode_ci
+COMMENT='Financial report table';

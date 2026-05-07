@@ -30,9 +30,8 @@ public class User {
     @Column(nullable = false, length = 100)
     private String namaLengkap;
     
-    @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private UserRole role;
+    private String role;
     
     @Column(nullable = true, columnDefinition = "CHAR(36)")
     private UUID poliklinikId;

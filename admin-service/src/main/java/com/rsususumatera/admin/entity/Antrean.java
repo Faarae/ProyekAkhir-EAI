@@ -38,10 +38,8 @@ public class Antrean {
     @Column(nullable = false)
     private LocalDate tanggal;
     
-    @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    @Builder.Default
-    private StatusAntrean status = StatusAntrean.MENUNGGU;
+    private String status;
     
     @Column(nullable = false, updatable = false)
     @Builder.Default

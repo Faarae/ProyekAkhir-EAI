@@ -38,12 +38,15 @@ public class User {
     private UUID poliklinikId;
     
     @Column(nullable = false, columnDefinition = "TINYINT(1)")
+    @Builder.Default
     private Boolean isActive = true;
     
     @Column(nullable = false, updatable = false)
+    @Builder.Default
     private LocalDateTime createdAt = LocalDateTime.now();
     
     @Column(nullable = false)
+    @Builder.Default
     private LocalDateTime updatedAt = LocalDateTime.now();
 
     public enum UserRole {

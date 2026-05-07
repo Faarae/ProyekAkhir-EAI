@@ -27,5 +27,6 @@ public class Poliklinik {
     private Integer lantai;
     
     @Column(nullable = false, columnDefinition = "TINYINT(1)")
+    @Builder.Default
     private Boolean isActive = true;
 }

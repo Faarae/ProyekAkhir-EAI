@@ -48,15 +48,18 @@ public class Pasien {
     private String noTelp;
     
     @Column(nullable = false, columnDefinition = "TINYINT(1)")
+    @Builder.Default
     private Boolean statusBpjs = false;
     
     @Column(nullable = true, length = 20)
     private String noBpjs;
     
     @Column(nullable = false, updatable = false)
+    @Builder.Default
     private LocalDateTime createdAt = LocalDateTime.now();
     
     @Column(nullable = false)
+    @Builder.Default
     private LocalDateTime updatedAt = LocalDateTime.now();
 
     public enum JenisKelamin {

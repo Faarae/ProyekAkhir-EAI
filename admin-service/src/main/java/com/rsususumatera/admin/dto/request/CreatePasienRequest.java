@@ -34,6 +34,7 @@ public class CreatePasienRequest {
     @Size(max = 15, message = "No telp maksimal 15 karakter")
     private String noTelp;
     
+    @Builder.Default
     private Boolean statusBpjs = false;
     
     @Size(max = 20, message = "No BPJS maksimal 20 karakter")

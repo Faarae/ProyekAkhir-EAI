@@ -41,9 +41,11 @@ public class JadwalDokter {
     private LocalTime jamSelesai;
     
     @Column(name = "kuota_pasien", nullable = false)
+    @Builder.Default
     private Integer kuotaPasien = 20;
     
     @Column(nullable = false, columnDefinition = "TINYINT(1)")
+    @Builder.Default
     private Boolean isActive = true;
 
     public enum HariKerja {

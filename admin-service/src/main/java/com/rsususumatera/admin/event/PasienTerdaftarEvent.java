@@ -12,7 +12,9 @@ import java.util.UUID;
 @AllArgsConstructor
 @Builder
 public class PasienTerdaftarEvent {
+    @Builder.Default
     private String eventType = "PASIEN_TERDAFTAR";
+    @Builder.Default
     private LocalDateTime timestamp = LocalDateTime.now();
     private PasienPayload payload;
     
